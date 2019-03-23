@@ -3,6 +3,15 @@
 """
     This module has the implementation for everything related to the world
     itself.
+
+                    North
+                 0  1  2  3  4
+            0   [X, X, X, X, X]
+            1   [X, X, X, X, X]
+    West    2   [X, X, X, X, X]     east
+            3   [X, X, X, X, X]
+            4   [X, X, X, X, X]
+                    South
 """
 
 
@@ -77,9 +86,9 @@ class World:
         if x < (self._w - 1):
             D['east'] = (x+1, y)
         if y > 0:
-            D['south'] = (x, y-1)
+            D['south'] = (x, y+1)
         if y < (self._h - 1):
-            D['north'] = (x, y+1)
+            D['north'] = (x, y-1)
         return D
 
     def is_pickup(self, x, y):
