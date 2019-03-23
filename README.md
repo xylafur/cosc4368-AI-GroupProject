@@ -7,6 +7,8 @@ functions that manipulate those entities and run using information contained
 within them.
 
 The intended purpose behind each of the modules is such:
+
+
     location.py
         Has the definitions for the objects that represent individual squares
         (locations) in the world.  There are 3 object types that are used by
