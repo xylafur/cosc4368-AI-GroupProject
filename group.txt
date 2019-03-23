@@ -1,0 +1,8 @@
+Group   First   Last        Email
+-------------------------------------------------------------
+12      James   Richardson  jkrichardson@uh.edu
+12      Robert  Rizzetto    rprizzetto@uh.edu
+12      Henry   Rodriguez   hrodriguez12@uh.edu
+12      Morris  Smith       mtsmith5@uh.edu
+12      Slater  Smith       sjsmith10@uh.edu
+
