@@ -13,7 +13,7 @@
             4   [X, X, X, X, X]
                     South
 """
-
+import copy
 
 from location import PickUpLocation, DropOffLocation, NormalLocation
 
@@ -50,11 +50,16 @@ class World:
         #initially populate the grid just with normal locations
         self._grid = [[NormalLocation(reward) for _ in range(width)] for _ in range(height)]
 
+        #TODO: add sanity check to make sure none of the pick up and drop off
+        #      locations are the same
+
         for (x, y, n) in pick_up_locations:
             self._grid[y][x] = PickUpLocation(pick_up_reward, reward, n)
 
         for (x, y, c) in drop_off_locations:
             self._grid[y][x] = DropOffLocation(drop_off_reward, reward, c)
+
+        self._original_grid = copy.deepcopy(self._grid)
 
         self._w = width
         self._h = height
@@ -65,10 +70,18 @@ class World:
             s += str(l) + '\n'
         return s
 
-    def get_square(self, x, y):
+    def get_square(self, x, y, grid=None):
         assert(x < self._w)
         assert(y < self._h)
-        return self._grid[y][x]
+
+        #for testing purposes.  See reset_world_test
+        if grid == None:
+            grid = self._grid
+        return grid[y][x]
+
+    def reset_world(self):
+        self._grid = copy.deepcopy(self._original_grid)
+
 
     def get_neighbors(self, x, y):
         """
@@ -113,4 +126,7 @@ class World:
 
     def drop_off(self, x, y):
         self.get_square(x, y).drop_off()
+
+    def get_block_count(self, x, y, grid=None):
+        return self.get_square(x, y, grid=grid).get_block_count()
 

@@ -35,6 +35,16 @@ class Location:
     def is_dropoff(self):
         return self._type == DROPOFF
 
+    def get_block_count(self):
+        if self._type == PICKUP:
+            return self._nb
+
+        elif self._type == DROPOFF:
+            return self._cur
+
+        else:
+            return None
+
 class PickUpLocation(Location):
     def __init__(self, pick_up_reward, reward, num_blocks):
         super().__init__(PICKUP, reward)
