@@ -6,10 +6,25 @@ class Agent:
         self._starting_position = (x, y)
         self._holding_block = False
 
-    def get_starting_position(self):
-        return self._starting_position
+###############################################################################
+#   Public Functions
+###############################################################################
 
     def move(self, direction):
+        """
+            Move either north, south, east or west
+
+            This does not take in to account the size of the world, so it is
+            up to the caller to ensure that the agent is not moving outside the
+            world
+
+            Updates both self._x and self._y as well as self._pos
+
+
+        """
+        assert(isinstance(direction, str))
+        direction = direction.lower()
+
         assert(direction in ['north', 'south', 'east', 'west'])
         if direction == 'north':
             self._y -= 1
@@ -20,6 +35,16 @@ class Agent:
         else:
             self._x += 1
         self._pos = (self._x, self._y)
+
+    def get_position(self):
+        """
+            returns a tuple containing x and y position
+        """
+        return self._pos
+
+    def reset_to_start(self):
+        self._set_position(*self._starting_position)
+        self._holding_block = False
 
     def is_holding_block(self):
         return self._holding_block
@@ -32,3 +57,10 @@ class Agent:
         assert(self.is_holding_block())
         self._holding_block = False
 
+###############################################################################
+#   Private Functions
+###############################################################################
+    def _set_position(self, x, y):
+        self._x = x
+        self._y = y
+        self._pos = (self._x, self._y)
