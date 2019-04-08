@@ -15,9 +15,13 @@
 """
 import copy
 
-from location import PickUpLocation, DropOffLocation, NormalLocation
+from location import PickUpLocation, DropOffLocation, NormalLocation, PICKUP, DROPOFF
 
 class World:
+
+###############################################################################
+#   Special Functions
+###############################################################################
     def __init__(self, width, height, pick_up_locations, drop_off_locations,
                  reward, pick_up_reward, drop_off_reward):
         """
@@ -47,28 +51,70 @@ class World:
                 drop_off_reward (int)
                     the reward to the agent when it drops off a block
         """
-        #initially populate the grid just with normal locations
-        self._grid = [[NormalLocation(reward) for _ in range(width)] for _ in range(height)]
+        #######################################################################
+        #   Save all of the initial variables
+        #######################################################################
+        self._reward = reward
 
-        #TODO: add sanity check to make sure none of the pick up and drop off
-        #      locations are the same
-
-        for (x, y, n) in pick_up_locations:
-            self._grid[y][x] = PickUpLocation(pick_up_reward, reward, n)
-
-        for (x, y, c) in drop_off_locations:
-            self._grid[y][x] = DropOffLocation(drop_off_reward, reward, c)
-
-        self._original_grid = copy.deepcopy(self._grid)
+        self._pick_up_locations = pick_up_locations
+        self._pick_up_reward = pick_up_reward
+        self._drop_off_locations = drop_off_locations
+        self._drop_off_reward = drop_off_reward
 
         self._w = width
         self._h = height
+
+        #######################################################################
+        #   Create the Grid for the world.  Initially full of normal locations
+        #   but then add in the pick up and drop off locations
+        #######################################################################
+
+        self._grid = [[NormalLocation(reward) for _ in range(width)]
+                      for _ in range(height)]
+
+        #TODO: add sanity check to make sure none of the pick up and drop off
+        #      locations are the same
+        
+        self._set_locations(pick_up_locations, PICKUP)
+        self._set_locations(drop_off_locations, DROPOFF)
+
+        self._original_grid = copy.deepcopy(self._grid)
 
     def __repr__(self):
         s = ''
         for l in self._grid:
             s += str(l) + '\n'
         return s
+
+###############################################################################
+#   Public Functions
+###############################################################################
+    
+    _swapped = False
+    def swap_pickup_dropoff(self, reset=True):
+        """
+            This function will make all old pick up locations drop off
+            locations and vice versa
+
+            It resets the world before doing the swap!
+
+            Also it is intelligent (ooooh scary smary machine!).  If it has
+            swaped the locations before, it will just reset the world (beause
+            that makes it how it was in the beginning)
+        """
+        self.reset_world()
+
+        if self._swapped:
+            self._swapped = False
+            return
+        else:
+            self._swapped = True
+
+        self._pick_up_locations, self._drop_off_locations = \
+                self._drop_off_locations, self._pick_up_locations
+
+        self._set_locations(self._pick_up_locations, PICKUP)
+        self._set_locations(self._drop_off_locations, DROPOFF)
 
     def get_square(self, x, y, grid=None):
         assert(x < self._w)
@@ -129,4 +175,26 @@ class World:
 
     def get_block_count(self, x, y, grid=None):
         return self.get_square(x, y, grid=grid).get_block_count()
+
+###############################################################################
+#   Private Functions
+###############################################################################
+
+    def _set_locations(self, locations, location_type):
+        assert(isinstance(locations, list) or isinstance(locations, tuple))
+        assert(locations[-1] is None or isinstance(locations[-1], list)
+               or isinstance(locations[-1], tuple))
+
+        for (x, y, n) in locations:
+            self._set_location(x, y, n, location_type)
+
+    def _set_location(self, x, y, n, location_type):
+        assert(location_type in [PICKUP, DROPOFF])
+
+        if location_type == PICKUP:
+            self._grid[y][x] = PickUpLocation(self._pick_up_reward, self._reward, n)
+        elif location_type == DROPOFF:
+            self._grid[y][x] = DropOffLocation(self._drop_off_reward, self._reward, n)
+
+
 
