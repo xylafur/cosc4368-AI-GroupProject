@@ -30,6 +30,33 @@ def world_pick_up_drop_off_test():
     assert(not w.is_pickup(1, 4))
     assert(not w.is_dropoff(1, 4))
 
+@test
+def swap_pickup_dropoff_test():
+    w = World(5, 5, [(1, 1, 3), (2, 2, 4)], [(3, 3, 3), (4, 4, 4)], -1, 13, 13)
+
+    for (x, y) in [(1, 1), (2, 2)]:
+        assert(w.get_square(x, y).is_pickup())
+
+    for (x, y) in [(3, 3), (4, 4)]:
+        assert(w.get_square(x, y).is_dropoff())
+
+    w.swap_pickup_dropoff()
+
+    for (x, y) in [(1, 1), (2, 2)]:
+        assert(w.get_square(x, y).is_dropoff())
+
+    for (x, y) in [(3, 3), (4, 4)]:
+        assert(w.get_square(x, y).is_pickup())
+
+    w.swap_pickup_dropoff()
+
+    for (x, y) in [(1, 1), (2, 2)]:
+        assert(w.get_square(x, y).is_pickup())
+
+    for (x, y) in [(3, 3), (4, 4)]:
+        assert(w.get_square(x, y).is_dropoff())
+
+
 
 @test
 def reset_world_test():
