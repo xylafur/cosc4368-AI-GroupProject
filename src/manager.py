@@ -3,6 +3,7 @@
 """
 
 from qtable import QTable
+from location import PICKUP, DROPOFF
 
 def manager(world, agent, algo, learning_rate, discount_rate, policy,
             num_steps, setup=None):
@@ -51,3 +52,25 @@ def manager(world, agent, algo, learning_rate, discount_rate, policy,
         setup = []
 
     q = QTable(world._w, world._h)
+
+def get_current_state(world, agent):
+    """
+        Returns the state of the universe (as a tuple) based on the agent and
+        world states
+
+        The state is of thie format
+
+        (x position of the agent, y position of the agent, is the agent holding
+         a block?, status of pickup locations, status of drop off locations)
+
+        the status of the pick up and drop off locations will be multiple
+        entries, the number of entries will be equal to the number of pickup
+        and dropoff locations.  The status is true if blocks can be picked up
+        or dropped off still, but false otherwise.
+    """
+    x, y = agent.get_position()
+    block = agent.is_holding_block()
+    pickup_status = world.locations_status(PICKUP)
+    dropoff_status = world.locations_status(DROPOFF)
+
+    return (x, y, block, *pickup_status, *dropoff_status)

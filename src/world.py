@@ -89,7 +89,44 @@ class World:
 ###############################################################################
 #   Public Functions
 ###############################################################################
-    
+
+    num_pickup_locations = lambda self: len(self._pick_up_locations)
+    num_dropoff_locations = lambda self: len(self._drop_off_locations)
+
+    is_pickup = lambda self, x, y: self.get_square(x, y).is_pickup()
+
+    is_dropoff = lambda self, x, y: self.get_square(x, y).is_dropoff()
+
+    get_reward = lambda self, x, y, has_block:                          \
+        self.get_square(x, y).get_reward(has_block)
+
+    # The below functions assume that the user knows that this particular
+    # square is of the correct type
+    check_pick_up = lambda self, x, y: self.get_square(x, y).check_pick_up()
+    check_drop_off = lambda self, x, y: self.get_square(x, y).check_drop_off()
+
+    get_block_count = lambda self, x, y, grid=None:                     \
+        self.get_square(x, y, grid=grid).get_block_count()
+
+    def locations_status(self, location_type):
+        """
+            Iterates through the world from left to right, top to bottom.
+
+            Returns a list for each of the pick up locations where True
+            represents the location still having blocks to be picked up and
+            False means that the space is empty
+        """
+        assert(location_type in [PICKUP, DROPOFF])
+
+        locs = []
+        for x in range(self._w):
+            for y in range(self._h):
+                if location_type == PICKUP and self.is_pickup(x, y):
+                    locs.append(self.check_pick_up(x, y))
+                elif location_type == DROPOFF and self.is_dropoff(x, y):
+                    locs.append(self.check_drop_off(x, y))
+        return locs
+
     _swapped = False
     def swap_pickup_dropoff(self, reset=True):
         """
@@ -150,31 +187,11 @@ class World:
             D['north'] = (x, y-1)
         return D
 
-    def is_pickup(self, x, y):
-        return self.get_square(x, y).is_pickup()
-
-    def is_dropoff(self, x, y):
-        return self.get_square(x, y).is_dropoff()
-
-    def get_reward(self, x, y, has_block):
-        return self.get_square(x, y).get_reward(has_block)
-
-    # The below functions assume that the user knows that this particular
-    # square is of the correct type
-    def check_pick_up(self, x, y):
-        return self.get_square(x, y).check_pick_up()
-
-    def check_drop_off(self, x, y):
-        return self.get_square(x, y).check_drop_off()
-
     def pick_up(self, x, y):
         self.get_square(x, y).pick_up()
 
     def drop_off(self, x, y):
         self.get_square(x, y).drop_off()
-
-    def get_block_count(self, x, y, grid=None):
-        return self.get_square(x, y, grid=grid).get_block_count()
 
 ###############################################################################
 #   Private Functions
