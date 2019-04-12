@@ -68,18 +68,6 @@ class Agent:
         assert(self.is_holding_block())
         self._holding_block = False
 
-    def pickup_dropoff(self, world):
-        """
-            If the agent is on a pick up square, and he does not have a block,
-            then he will pick up the block
-
-            If the agent is on a drop off of squre
-        """
-        return world.get_reward(self._x, self._y, self.is_holding_block())
-
-
-
-
 ###############################################################################
 #   Private Functions
 ###############################################################################
