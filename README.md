@@ -6,9 +6,23 @@ directory either construct objects that represent entities in the experiment or
 functions that manipulate those entities and run using information contained
 within them.
 
+For example the 'Agent' object in agent.py has all of the information that the
+agent would contain such as its current position as an x, y point and wether or
+not it is holding a block
+
+The 'World' object in world.py contains everything about the world, which
+really is just a grid of 'Location' objects.  Some of these 'Location' objects
+are pick up and drop offs, others are not.  Other than that the World object
+has the behavior of the world defined as functions.
+
+These two object know nothing about eachother.  All of the functions in World
+can be implemented without an Agent object.  All of the functions in Agent can
+be implemented without a World object.  The World does not know the position of
+the Agent, only the Agent knows his position (as an x, y point).
+
+
+
 The intended purpose behind each of the modules is such:
-
-
     location.py
         Has the definitions for the objects that represent individual squares
         (locations) in the world.  There are 3 object types that are used by
@@ -28,6 +42,13 @@ The intended purpose behind each of the modules is such:
         Has the definition of the actual world.  The world is just made up of a
         grid of locations.
 
+        The world does not keep track of the position of the agent!
+
+        The world should not change!  The only thing that will change about the
+        world is blocks will be picked up from pick up locations and dropped
+        off onto the drop off locations.  Thus only a few of the locations in
+        the grid that makes up the world will change.
+
         This world object allows the user to easily grab particular squares
         from the grid and determine the type of location they are.  It also
         allows the user to pick up and drop off block from those locations with
@@ -43,13 +64,16 @@ The intended purpose behind each of the modules is such:
             world, there are too many ambigious questions.  Does the world own
             the agent, or does the agent own the world?  If the answer is both,
             then who holds the information about the position of the agent?
+            Both?  Then we have to update both objects each time the agent
+            moves.
 
     agent.py
         Has the definition of the Agent object. The Agent object represents out
         agent that goes around picking up and dropping off blocks.
-        The agent keeps track of his position in the world, and exposes the
-        user functions that allow him to move either north, south, east or west
-        as well as pick up and drop off blocks
+
+        The agent keeps track of his position in the world as an x y position,
+        and exposes the user functions that allow him to move either north,
+        south, east or west as well as pick up and drop off blocks
 
     qtable.py
         Has the definition for the qtable that will store all of our data.
