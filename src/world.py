@@ -74,7 +74,6 @@ class World:
 
         #TODO: add sanity check to make sure none of the pick up and drop off
         #      locations are the same
-        
         self._set_locations(pick_up_locations, PICKUP)
         self._set_locations(drop_off_locations, DROPOFF)
 
