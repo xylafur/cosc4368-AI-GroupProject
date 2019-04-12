@@ -92,4 +92,4 @@ def PEPLOIT(flagPickUp, flagDropOff):
 #   tieBreaker = str(random.randint(1, 6))
 # TODO: Finish after clarifying with team
 
-def PGREEDY(flagPickUp, flagDropOff):
+# def PGREEDY(flagPickUp, flagDropOff):
