@@ -49,3 +49,9 @@ def agent_reset_test():
 
     assert(a.get_position() == (0, 0))
     assert(not a.is_holding_block())
+
+@test
+def agent_pretend_move_test():
+    a = Agent(0, 0)
+    a2 = a.pretend_move('south')
+    assert(a2.get_position() == (0, 1))
