@@ -26,5 +26,3 @@ class QTable:
                 for h in range(self._h):
                     s += '{} {} {}    '.format(w, h, b) + str(self._table[(w, h, b)]) + '\n'
         return s
-
-
