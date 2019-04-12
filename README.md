@@ -12,9 +12,11 @@ The intended purpose behind each of the modules is such:
     location.py
         Has the definitions for the objects that represent individual squares
         (locations) in the world.  There are 3 object types that are used by
-        the rest of the modules (4 in total).  Pick up locations, drop off
-        locations and then normal locations which are neither.
-
+        the rest of the modules (4 in total).  Square types:
+        - Pick up,
+        - Drop off,
+        - Normal
+        
         The only module that should need this one, is the world module.
 
         Each of these location objects has various functions that allow the
