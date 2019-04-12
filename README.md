@@ -20,6 +20,20 @@ can be implemented without an Agent object.  All of the functions in Agent can
 be implemented without a World object.  The World does not know the position of
 the Agent, only the Agent knows his position (as an x, y point).
 
+For certain modules though it does make sense to take in another object as a
+parameter.  For example, the q learning functions.  In the q learning functions
+you need to determine all of the valid actions that the agent can take.  The
+World module has a function that will take in a given position and return a
+list of valid actions that could be taken.  Thus it makes sense for those
+functions to take in the world object.  Additionally those functions could also
+take in either the agent object (from which the x, y position can be obtained)
+or the raw x, y position of the agent.
+
+It is also worth noting in the previous example that neither world nor agent
+would have to be imported into the q learning module.  The objects can be
+passed into the function be some other higher level mechanism (such as the
+manager) that has imported the agent.  In python, You do not need to import an
+object to use it if it has been passed into your function as a parameter.
 
 
 The intended purpose behind each of the modules is such:
