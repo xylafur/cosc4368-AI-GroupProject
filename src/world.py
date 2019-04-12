@@ -181,9 +181,9 @@ class World:
         if x < (self._w - 1):
             D['east'] = (x+1, y)
         if y > 0:
-            D['south'] = (x, y+1)
-        if y < (self._h - 1):
             D['north'] = (x, y-1)
+        if y < (self._h - 1):
+            D['south'] = (x, y+1)
         return D
 
     def pick_up(self, x, y):
