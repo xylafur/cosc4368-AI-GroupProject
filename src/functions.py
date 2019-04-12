@@ -3,17 +3,12 @@
     as well as the SARSA q learning function
 
 """
-
-PRANDOM = "PRANDOM"
-PEPLOIT = "PEPLOIT"
-PGREEDY = "PGREEDY"
-
-
 ##################
-#   This is just what I think that these functions will need, not 100%
+#   I have no idea what these functions will actually need, this is up to the
+#   implementer.  They can be changed based on what the designer requires
 ##################
-def q_learning(world, agent, qtable):
-    pass
+def q_learning(world, agent, qtable, action, next_action, learning_rate, discount_rate):
+    raise NotImplementedError()
 
-def SARSA(world, agent, qtable):
-    pass
+def SARSA(world, agent, qtable, action, next_action, learning_rate, discount_rate):
+    raise NotImplementedError()

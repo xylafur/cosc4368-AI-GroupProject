@@ -1,3 +1,4 @@
+from copy import deepcopy
 class Agent:
     def __init__(self, x, y):
         self._x = x
@@ -36,6 +37,16 @@ class Agent:
             self._x += 1
         self._pos = (self._x, self._y)
 
+    def pretend_move(self, action):
+        """
+            Makes a copy of this agent.  Makes that agent preform the action
+            that is provided and then returns that agent after it has made the
+            move.
+        """
+        _copy = deepcopy(self)
+        _copy.move(action)
+        return _copy
+
     def get_position(self):
         """
             returns a tuple containing x and y position
@@ -56,6 +67,18 @@ class Agent:
     def drop_off(self):
         assert(self.is_holding_block())
         self._holding_block = False
+
+    def pickup_dropoff(self, world):
+        """
+            If the agent is on a pick up square, and he does not have a block,
+            then he will pick up the block
+
+            If the agent is on a drop off of squre
+        """
+        return world.get_reward(self._x, self._y, self.is_holding_block())
+
+
+
 
 ###############################################################################
 #   Private Functions
