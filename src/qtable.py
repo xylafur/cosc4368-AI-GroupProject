@@ -12,6 +12,7 @@ class QTable:
         self._w = width
         self._h = height
 
+
     def update_table(self, x, y, b, vals):
         """
             Vals is expected to be a dict with keys north, south east and west,
@@ -25,6 +26,9 @@ class QTable:
             for w in range(self._w):
                 for h in range(self._h):
                     s += '{} {} {}    '.format(w, h, b) + str(self._table[(w, h, b)]) + '\n'
+
         return s
 
-
+    # TODO: Make a function that will hold all the q-values of the relevant squares (North, East, South, West).
+    # def get_relevant_sqaures(self):
+    #     return (positionVals)
