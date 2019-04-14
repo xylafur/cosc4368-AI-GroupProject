@@ -32,8 +32,8 @@
 #
 
 # Libraries imported
-import itertools
 import random
+
 # Classes imported
 from src import agent, world, qtable
 
@@ -55,91 +55,54 @@ class policy:
     # Retrive the neighboring squares of the agent
     neighbors_sq = world.get_neighbors()
 
-    # Check if the neighboring locations are pickup locations
+    # These will be used to reference the keys using values of the dictionary.
+    neigh_keys = list(neighbors_sq.keys())
+    neigh_vals = list(neighbors_sq.values())
 
+    # is_pickup_local/is_dropoff_local will be passed to the policy functions
+    # as a parameter
+    is_pickup_local = ()
+    is_dropoff_local = ()
 
-for posit in neighbors_sq.values():
-    is_pickup = world.is_pick(posit[0], posit[1])
-    if (is_pickup == True):
+    # normalSq  - will contain (x,y) all the normal square neighbors relative to agent.
+    normalSq = []  # Not sure if needed.
+    for posit in neigh_vals():
+        is_pickup = world.is_pick(posit[0], posit[1])
+        is_dropoff = world.is_dropoff(posit[0], posit[1])
+        if (is_pickup == True):
+            is_pickup_local = (posit[0], posit[1])
+        if (is_dropoff_local == True):
+            is_dropoff_local = (posit[0], posit[1])
+        else:
+            normalSq.append(posit[0], posit[1])
 
+    def PRANDOM(self, is_pickup_local, is_dropoff_local, neigh_keys, neigh_vals):
+        # TODO: REFACTOR THESE CONDITIONAL STATEMENTS
+        if (len(is_pickup_local) & len(is_dropoff_local) == 0):
+            print(random.choice(neigh_keys))
+            return random.choice(neigh_keys)
+        else:
+            if (len(is_pickup_local) != 0):
+                print(neigh_keys[neigh_vals.index(is_pickup_local)])
+                return neigh_keys[neigh_vals.index(is_pickup_local)]
+            else:
+                if (len(is_dropoff_local) != 0):
+                    print(neigh_keys[neigh_vals.index(is_pickup_local)])
+                    return neigh_keys[neigh_vals.index(is_dropoff_local)]
 
+    def PEPLOIT(self, ):
 
+        ## Psudeo until questions are cleared. Not sure how y'all are going to want to handle the Q-table
+        maxQVal = max(qvals)  # Highest Q-value
+        # Check the number of maxQVal there are in qvals
+    # how are the qvalues going to be handledd
 
-    ## Used to compare the pickup/dropoff locations with neighboring locations
-    # TODO: Check if team would be cool with having a function that returns this instead of having it in this class.
-    # for ag_lcal in neighbors_sq.values():
-    #     print(ag_lcal)
-    #     comparisons = [a == b for (a,b) in itertools.product(,[ag_lcal])]
-    #     print(comparisons)
-    #     if (comparisons == True):
-    #
+    #  maxQ = max(Qtable[])
+    # comparisonsPickUp = [a == b for (a, b) in itertools.product(maxQ, Qtable[])]
+    # if (tie):
+    #   tieBreaker = str(random.randint(1, 6))
+    # TODO: Finish after clarifying with team
 
+    # def PGREEDY(flagPickUp, flagDropOff):
 
-    # TODO: call functions from world.
-    # Assume it's being returned as tuple
-    # worldDropOffLocal = list(world.drop_off_locations);
-    # worldPickUpLocal = list(world.pick_up_locations);
-
-
-
-
-    # Delete every 3rd element since reward is not relevant to this class.
-    # Assuming tuple (x, y, reward) as seen in world.py
-    del worldPickUpLocal[2::3]
-    del worldDropOffLocal[2::3]
-
-
-# compare to pickup drop off location that is valid, then choose them, or chose random o
-## This doesn't actually matter, pick we would rather move to the pick up or drop off locatoion
-# # Using list comprehensions
-# comparisonsPickUp = [a == b for (a, b) in itertools.product(agentLocal, worldPickUpLocal)]
-# comparisonsDropOff = [a == b for (a, b) in itertools.product(agentLocal, worldDropOffLocal)]
-#
-# # Flag variable for both pick up and dropoff
-# flagPickUp = False
-# flagDropOff = False
-#
-# if True in comparisonsPickUp:
-#     flagPickUp = True
-# if True in comparisonsDropOff:
-#     flagDropOff = True
-
-
-moves = ['North', 'East', 'South', 'West']
-
-
-def PRANDOM(self, flagPickUp, flagDropOff):
-    if (flagPickUp & flagDropOff == False):
-        return random.choice(moves)
-    else:
-        if (flagPickUp == True):
-            return flagPickUp
-        if (flagDropOff == True):
-            return flagDropOff
-                # Retain highest Q-Value, break ties with dice
-
-
-qvals = list(qtable.get_relevant_sqaures());
-
-
-def PEPLOIT(self, flagPickUp, flagDropOff):
-    if (flagPickUp == True):
-        return flagPickUp
-    if (flagDropOff == True):
-        return flagDropOff
-    ## Psudeo until questions are cleared. Not sure how y'all are going to want to handle the Q-table
-    maxQVal = max(qvals)  # Highest Q-value
-    # Check the number of maxQVal there are in qvals
-# how are the qvalues going to be handledd
-
-
-#  maxQ = max(Qtable[])
-# comparisonsPickUp = [a == b for (a, b) in itertools.product(maxQ, Qtable[])]
-# if (tie):
-#   tieBreaker = str(random.randint(1, 6))
-# TODO: Finish after clarifying with team
-
-# def PGREEDY(flagPickUp, flagDropOff):
-
-
-# TODO: Pass to manager.py next move north, east,west, south
+    # TODO: Pass to manager.py next move north, east,west, south
