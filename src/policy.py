@@ -78,22 +78,24 @@ class policy:
 
     def PRANDOM(self, is_pickup_local, is_dropoff_local, neigh_keys, neigh_vals):
         # TODO: REFACTOR THESE CONDITIONAL STATEMENTS
-        if (len(is_pickup_local) & len(is_dropoff_local) == 0):
-            print(random.choice(neigh_keys))
-            return random.choice(neigh_keys)
+        if (len(is_pickup_local) != 0):
+            print(neigh_keys[neigh_vals.index(is_pickup_local)])
+            return neigh_keys[neigh_vals.index(is_pickup_local)]
         else:
-            if (len(is_pickup_local) != 0):
+            if (len(is_dropoff_local) != 0):
                 print(neigh_keys[neigh_vals.index(is_pickup_local)])
-                return neigh_keys[neigh_vals.index(is_pickup_local)]
+                return neigh_keys[neigh_vals.index(is_dropoff_local)]
             else:
-                if (len(is_dropoff_local) != 0):
-                    print(neigh_keys[neigh_vals.index(is_pickup_local)])
-                    return neigh_keys[neigh_vals.index(is_dropoff_local)]
+                # Return random selection of available direction
+                print(random.choice(neigh_keys))
+                return random.choice(neigh_keys)
+
+
 
     def PEPLOIT(self, ):
 
-        ## Psudeo until questions are cleared. Not sure how y'all are going to want to handle the Q-table
-        maxQVal = max(qvals)  # Highest Q-value
+# Psudeo until questions are cleared. Not sure how y'all are going to want to handle the Q-table
+# maxQVal = max(qvals)  # Highest Q-value
         # Check the number of maxQVal there are in qvals
     # how are the qvalues going to be handledd
 
@@ -101,7 +103,6 @@ class policy:
     # comparisonsPickUp = [a == b for (a, b) in itertools.product(maxQ, Qtable[])]
     # if (tie):
     #   tieBreaker = str(random.randint(1, 6))
-    # TODO: Finish after clarifying with team
 
     # def PGREEDY(flagPickUp, flagDropOff):
 
