@@ -41,7 +41,7 @@ The intended purpose behind each of the modules is such:
     location.py
         Has the definitions for the objects that represent individual squares
         (locations) in the world.  There are 3 object types that are used by
-        the rest of the modules (4 in total).  Square types:
+        the rest of the modules (4 in total). Square types:
         - Pick up,
         - Drop off,
         - Normal
@@ -89,7 +89,25 @@ The intended purpose behind each of the modules is such:
         The agent keeps track of his position in the world as an x y position,
         and exposes the user functions that allow him to move either north,
         south, east or west as well as pick up and drop off blocks
-
+    
+    policy.py
+        Contains the 3 policies that the agent will use to make decisions on it's
+        movement within the grid world. 
+        3 Policies will be used in the experiments:
+            1. PRANDOM
+                 If pickup and dropoff is applicable, choose this operator, 
+                 otherwise; choose an applicable operator randomly.
+            2. PEPLOIT
+                If pickup and dropoff is applicable, choose this operator; 
+                otherwise, choose the operator with the highest Q-VALUE 80% of the
+                time, and choose a different operator 20% of the time. If there are 
+                any ties between any chosen Q-VALUE, aside pickup and dropoff 
+                locations, break the tie with a dice. 
+            3. PGREEDY
+                If pickup and dropoff is applicable, choose this operator; apply 
+                the applicable operator with the highest Q-VALUE (break ties by 
+                rolling a dice for operators with the same Q-VALUE).
+            
     qtable.py
         Has the definition for the qtable that will store all of our data.
 
