@@ -104,6 +104,7 @@ class World:
             D['north'] = (x, y-1)
         return D
 
+    ## Returns if a particular sqaure is pickup or dropoff
     def is_pickup(self, x, y):
         return self.get_square(x, y).is_pickup()
 
@@ -115,9 +116,11 @@ class World:
 
     # The below functions assume that the user knows that this particular
     # square is of the correct type
+    # Checks if there are still blocks too pick up
     def check_pick_up(self, x, y):
         return self.get_square(x, y).check_pick_up()
 
+    # Checks if I can drop anything off here.
     def check_drop_off(self, x, y):
         return self.get_square(x, y).check_drop_off()
 
