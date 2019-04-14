@@ -37,6 +37,7 @@ object to use it if it has been passed into your function as a parameter.
 
 
 The intended purpose behind each of the modules is such:
+    
     location.py
         Has the definitions for the objects that represent individual squares
         (locations) in the world.  There are 3 object types that are used by
