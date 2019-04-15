@@ -1,5 +1,4 @@
 from agent import Agent
-from world import World
 
 from test import test, TESTS
 

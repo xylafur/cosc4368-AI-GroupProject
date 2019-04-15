@@ -51,7 +51,7 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
     if not setup:
         setup = []
 
-    q = QTable(world._w, world._h)
+    q = QTable(world)
     current_step = 0
 
     # Set this to None here for the SARSA algorithm.  We won't be 

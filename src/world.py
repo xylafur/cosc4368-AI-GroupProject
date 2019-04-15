@@ -192,6 +192,12 @@ class World:
     def drop_off(self, x, y):
         self.get_square(x, y).drop_off()
 
+    def get_width(self):
+        return self._w
+
+    def get_height(self):
+        return self._h
+
 ###############################################################################
 #   Private Functions
 ###############################################################################
