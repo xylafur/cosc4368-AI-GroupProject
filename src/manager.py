@@ -59,6 +59,9 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
     next_action = None
 
     while current_step < num_steps:
+        if is_world_solved(world, agent):
+            world.reset_world()
+            agent.reset_to_start()
 
         # The policy will tell us what our next action will be
         #
@@ -90,6 +93,15 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
         current_step += 1
 
         policy = get_new_policy(setup, current_step, policy)
+
+    print(get_current_state(world, agent))
+    print(policy.__name__)
+    print("Total Moves: {}".format(agent._total_moves))
+    print("Total Pickups: {}".format(agent._total_pickups))
+    print("Total Dropoffs: {}".format(agent._total_dropoffs))
+
+is_world_solved = lambda world, agent:                                      \
+    all([not each for each in get_current_state(world, agent)[3:]])
 
 def pickup_dropoff(world, agent):
     # If the agent is on a pick up square that has blocks that can be picked up
