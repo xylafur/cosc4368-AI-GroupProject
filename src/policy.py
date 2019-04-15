@@ -90,9 +90,7 @@ class policy:
                 print(random.choice(neigh_keys))
                 return random.choice(neigh_keys)
 
-
-
-    def PEPLOIT(self, ):
+    def PEPLOIT(self, is_pickup_local, is_dropoff_local, neigh_keys, neigh_vals):
 
 # Psudeo until questions are cleared. Not sure how y'all are going to want to handle the Q-table
 # maxQVal = max(qvals)  # Highest Q-value
