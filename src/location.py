@@ -105,7 +105,7 @@ class DropOffLocation(Location):
 
         """
         if has_block and self.check_drop_off():
-            return self._pur
+            return self._dor
 
         return super().get_reward(has_block)
 
