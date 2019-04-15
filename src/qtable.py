@@ -43,6 +43,9 @@ class QTable:
     def __getitem__(self, state):
         return self._table[state]
 
+    def __setitem__(self, state, val):
+        self._table[state] = val
+
 
     def update_table(self, state, vals):
         """

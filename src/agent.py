@@ -7,6 +7,10 @@ class Agent:
         self._starting_position = (x, y)
         self._holding_block = False
 
+        self._total_pickups = 0
+        self._total_dropoffs = 0
+        self._total_moves = 0
+
 ###############################################################################
 #   Public Functions
 ###############################################################################
@@ -37,6 +41,8 @@ class Agent:
             self._x += 1
         self._pos = (self._x, self._y)
 
+        self._total_moves += 1
+
     def pretend_move(self, action):
         """
             Makes a copy of this agent.  Makes that agent preform the action
@@ -63,10 +69,12 @@ class Agent:
     def pick_up(self):
         assert(not self.is_holding_block())
         self._holding_block = True
+        self._total_pickups += 1
 
     def drop_off(self):
         assert(self.is_holding_block())
         self._holding_block = False
+        self._total_dropoffs += 1
 
 ###############################################################################
 #   Private Functions

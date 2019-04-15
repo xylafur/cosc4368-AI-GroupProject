@@ -77,7 +77,8 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
 
         #   Update the q table based on the state we are in and the action we
         #   have chosen
-        function(world, agent, q, action, next_action, learning_rate, discount_rate)
+        learning_function(world, agent, q, action, next_action, learning_rate,
+                          discount_rate)
 
         # If we are on a pick up and don't have a block, pick it up.  If we are
         # on a drop off and have a block, drop it off
@@ -93,17 +94,14 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
 def pickup_dropoff(world, agent):
     # If the agent is on a pick up square that has blocks that can be picked up
     # and the agent is not carrying a block, then pick it up
-    if world.is_pickup(*agent.get_pos()) and not agent.is_holding_block():
-        world.pick_up(*agent.get_pos())
+    if world.is_pickup(*agent.get_position()) and not agent.is_holding_block():
+        world.pick_up(*agent.get_position())
         agent.pick_up()
     # If the agent is on a drop off square and that square is not full and the
     # agent has a block to drop off, then drop off the block
-    elif world.is_drop_off(*agent.get_pos()) and agent.is_holding_block():
-        world.drop_off(*agent.get_pos())
+    elif world.is_dropoff(*agent.get_position()) and agent.is_holding_block():
+        world.drop_off(*agent.get_position())
         agent.drop_off()
-
-
-
 
 def get_new_policy(setup, steps, current):
     """
@@ -136,7 +134,6 @@ def get_new_policy(setup, steps, current):
         new_policy = current
 
     return new_policy
-
 
 def get_current_state(world, agent):
     """

@@ -1,6 +1,7 @@
 from world import World
 from agent import Agent
-from functions import q_learning, SARSA, PRANDOM, PEPLOIT, PGREEDY
+from functions import q_learning
+from policies import p_random
 from manager import manager
 
 def main():
@@ -10,7 +11,8 @@ def main():
 
     # This should run experiment number 1.  8000 steps total, the first 4000
     # steps we use PRANDOM policy, then we use PGREEDY for the next 4000 steps
-    manager(w, a, q_learning, 0.3, 0.5, PRANDOM, 8000, [(4000, PGREEDY)])
+    manager(w, a, q_learning, 0.3, 0.5, p_random, 8000)
+    #manager(w, a, q_learning, 0.3, 0.5, PRANDOM, 8000, [(4000, PGREEDY)])
 
 if __name__ == '__main__':
     #TODO: Add argument parsing to pass into the main function
