@@ -68,11 +68,11 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
         #
         #   There is probably better way of doing this
         if not action:
-            action = policy(agent, world)
-            next_action = policy(agent.pretend_move(action), world)
+            action = policy(agent, world, q)
+            next_action = policy(agent.pretend_move(action), world, q)
         else:
             action = next_action
-            next_action = policy(agent.pretend_move(action), world)
+            next_action = policy(agent.pretend_move(action), world, q)
 
 
         #   Update the q table based on the state we are in and the action we

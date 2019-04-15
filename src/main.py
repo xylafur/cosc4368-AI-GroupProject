@@ -1,7 +1,7 @@
 from world import World
 from agent import Agent
 from functions import q_learning
-from policies import p_random
+from policies import p_random, p_greedy, p_exploit
 from manager import manager
 
 def main():
@@ -12,6 +12,8 @@ def main():
     # This should run experiment number 1.  8000 steps total, the first 4000
     # steps we use PRANDOM policy, then we use PGREEDY for the next 4000 steps
     manager(w, a, q_learning, 0.3, 0.5, p_random, 8000)
+    manager(w, a, q_learning, 0.3, 0.5, p_greedy, 8000)
+    manager(w, a, q_learning, 0.3, 0.5, p_exploit, 8000)
     #manager(w, a, q_learning, 0.3, 0.5, PRANDOM, 8000, [(4000, PGREEDY)])
 
 if __name__ == '__main__':
