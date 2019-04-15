@@ -21,5 +21,3 @@ def state_lookup():
     state = get_current_state(w, a)
 
     assert(q[state] == {'north': 0, 'south': 0, 'east': 0, 'west': 0})
-
-

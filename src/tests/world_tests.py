@@ -31,6 +31,17 @@ def world_pick_up_drop_off_test():
     assert(not w.is_dropoff(1, 4))
 
 @test
+def world_get_reward_test():
+    w = World(5, 5, [(1, 1, 3), (2, 2, 4)], [(3, 3, 3), (4, 4, 4)], -1, 13, 13)
+    assert(w.get_reward(0, 0, False) == -1)
+
+    assert(w.get_reward(3, 3, False) == -1)
+    assert(w.get_reward(3, 3, True) == 13)
+
+    assert(w.get_reward(1, 1, True) == -1)
+    assert(w.get_reward(1, 1, False) == 13)
+
+@test
 def swap_pickup_dropoff_test():
     w = World(5, 5, [(1, 1, 3), (2, 2, 4)], [(3, 3, 3), (4, 4, 4)], -1, 13, 13)
 
