@@ -92,17 +92,24 @@ class World:
     num_pickup_locations = lambda self: len(self._pick_up_locations)
     num_dropoff_locations = lambda self: len(self._drop_off_locations)
 
-    is_pickup = lambda self, x, y: self.get_square(x, y).is_pickup()
+    is_pickup_type = lambda self, x, y: self.get_square(x, y).is_pickup()
+    is_dropoff_type = lambda self, x, y: self.get_square(x, y).is_dropoff()
 
-    is_dropoff = lambda self, x, y: self.get_square(x, y).is_dropoff()
+    is_pickup = lambda self, x, y:                                      \
+        self.is_pickup_type(x, y) and self._check_pick_up(x, y)
 
-    get_reward = lambda self, x, y, has_block:                          \
-        self.get_square(x, y).get_reward(has_block)
+    is_dropoff = lambda self, x, y:                                     \
+        self.is_dropoff_type(x, y) and self._check_drop_off(x, y)
+
 
     # The below functions assume that the user knows that this particular
     # square is of the correct type
-    check_pick_up = lambda self, x, y: self.get_square(x, y).check_pick_up()
-    check_drop_off = lambda self, x, y: self.get_square(x, y).check_drop_off()
+    _check_pick_up = lambda self, x, y: self.get_square(x, y).check_pick_up()
+    _check_drop_off = lambda self, x, y: self.get_square(x, y).check_drop_off()
+
+
+    get_reward = lambda self, x, y, has_block:                          \
+        self.get_square(x, y).get_reward(has_block)
 
     get_block_count = lambda self, x, y, grid=None:                     \
         self.get_square(x, y, grid=grid).get_block_count()
@@ -120,10 +127,10 @@ class World:
         locs = []
         for x in range(self._w):
             for y in range(self._h):
-                if location_type == PICKUP and self.is_pickup(x, y):
-                    locs.append(self.check_pick_up(x, y))
-                elif location_type == DROPOFF and self.is_dropoff(x, y):
-                    locs.append(self.check_drop_off(x, y))
+                if location_type == PICKUP and self.is_pickup_type(x, y):
+                    locs.append(self.is_pickup(x, y))
+                elif location_type == DROPOFF and self.is_dropoff_type(x, y):
+                    locs.append(self.is_dropoff(x, y))
         return locs
 
     _swapped = False

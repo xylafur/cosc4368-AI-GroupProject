@@ -93,16 +93,12 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
 def pickup_dropoff(world, agent):
     # If the agent is on a pick up square that has blocks that can be picked up
     # and the agent is not carrying a block, then pick it up
-    if world.is_pickup(*agent.get_pos()) and                                \
-            world.check_pick_up(*agent.get_pos()) and                       \
-            not agent.is_holding_block():
+    if world.is_pickup(*agent.get_pos()) and not agent.is_holding_block():
         world.pick_up(*agent.get_pos())
         agent.pick_up()
     # If the agent is on a drop off square and that square is not full and the
     # agent has a block to drop off, then drop off the block
-    elif world.is_drop_off(*agent.get_pos()) and                            \
-            world.check_drop_off(*agent.get_pos()) and                      \
-            agent.is_holding_block():
+    elif world.is_drop_off(*agent.get_pos()) and agent.is_holding_block():
         world.drop_off(*agent.get_pos())
         agent.drop_off()
 
