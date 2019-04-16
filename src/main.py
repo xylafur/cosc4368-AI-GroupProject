@@ -3,7 +3,7 @@ from agent import Agent
 from functions import q_learning
 from policies import p_random, p_greedy, p_exploit
 from manager import manager
-
+from visualization import Display
 
 from copy import deepcopy
 def main():
@@ -11,7 +11,9 @@ def main():
               [(0, 4, 5), (2, 4, 5), (0, 2, 5)], -1, 15, 15)
     a = Agent(1, 1)
 
-
+    d = Display()
+    d.Create_World('Greedy Policy', 5, 5)
+    #d.Create_Square('Greedy Policy', 5, 5)
     # This should run experiment number 1.  8000 steps total, the first 4000
     # steps we use PRANDOM policy, then we use PGREEDY for the next 4000 steps
     manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
