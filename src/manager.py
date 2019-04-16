@@ -5,8 +5,42 @@
 from qtable import QTable
 from location import PICKUP, DROPOFF
 
+import os
+
+OUT_DIR="ExperimentOutput"
+
+def write_experiment_output(directory, filename, world, agent, qtable, policy,
+                            iteration):
+    if not os.path.isdir(directory):
+        os.mkdir(directory)
+    # only doing this because I know it will work on any platform.. the whole
+    # slash thing sucks
+    orgdir = os.getcwd()
+    os.chdir(directory)
+
+    with open(filename, 'w') as f:
+        f.write(filename + '\r\n')
+        f.write("Current State: {}\r\n".format(get_current_state(world, agent)))
+        f.write("Ending Policy: {}\r\n\r\n".format(policy.__name__))
+
+        f.write("Total Moves: {}\r\n".format(agent._total_moves))
+        f.write("Total Iterations: {}\r\n".format(iteration))
+        f.write("Total Pickups: {}\r\n".format(agent._total_pickups))
+        f.write("Total Dropoffs: {}\r\n\r\n".format(agent._total_dropoffs))
+
+        f.write("Starting Pick Up Locations: {}\r\n".format(world._org_pick_up_locations))
+        f.write("Starting Drop Off Locations: {}\r\n".format(world._org_drop_off_locations))
+        f.write("Ending Pick Up Locations: {}\r\n".format(world._pick_up_locations))
+        f.write("Ending Drop OffLocations: {}\r\n\r\n".format(world._drop_off_locations))
+
+        f.write("Resulting Q Table\r\n")
+        f.write(qtable.__repr__())
+
+    os.chdir(orgdir)
+
 def manager(world, agent, learning_function, learning_rate, discount_rate,
-            policy, num_steps, setup=None):
+            policy, num_steps, setup=None, swap_after_iter=None,
+            filename="give_me_a_name.txt"):
     """
         This function is kinda like the main, it will run the given
         learning_function on the given world with the given learning rate,
@@ -57,11 +91,16 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
     # Set this to None here for the SARSA algorithm.  We won't be 
     action = None
     next_action = None
+    iteration = 1
 
     while current_step < num_steps:
         if is_world_solved(world, agent):
             world.reset_world()
             agent.reset_to_start()
+            iteration += 1
+
+        if swap_after_iter and (swap_after_iter + 1) == iteration:
+            world.swap_pickup_dropoff()
 
         # The policy will tell us what our next action will be
         #
@@ -94,11 +133,8 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
 
         policy = get_new_policy(setup, current_step, policy)
 
-    print(get_current_state(world, agent))
-    print(policy.__name__)
-    print("Total Moves: {}".format(agent._total_moves))
-    print("Total Pickups: {}".format(agent._total_pickups))
-    print("Total Dropoffs: {}".format(agent._total_dropoffs))
+    write_experiment_output(OUT_DIR, filename, world, agent, q, policy,
+                            iteration)
 
 is_world_solved = lambda world, agent:                                      \
     all([not each for each in get_current_state(world, agent)[3:]])

@@ -1,6 +1,6 @@
 from world import World
 from agent import Agent
-from functions import q_learning
+from functions import q_learning, SARSA
 from policies import p_random, p_greedy, p_exploit
 from manager import manager
 
@@ -15,22 +15,21 @@ def main():
     # This should run experiment number 1.  8000 steps total, the first 4000
     # steps we use PRANDOM policy, then we use PGREEDY for the next 4000 steps
     manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-            [(4000, p_greedy)])
+            [(4000, p_greedy)], filename="Experiment1")
 
     manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-            [(200, p_exploit)])
+            [(200, p_exploit)], filename="Experiment2")
 
-    #manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 0.5, p_random, 8000,
-    #        [(200, p_exploit)])
+    manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 0.5, p_random, 8000,
+            [(200, p_exploit)], filename="Experiment3")
 
-    #manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 1.0, p_random, 8000,
-    #        [(200, p_exploit)])
+    manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 1.0, p_random, 8000,
+            [(200, p_exploit)], filename="Experiment4")
 
     #TODO: Add support for manager to swap after 2 iterations of terminal
-    #manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-    #        [(200, p_exploit)])
+    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
+            [(200, p_exploit)], swap_after_iter=2, filename="Experiment5")
 
- 
 
 
     #manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000)

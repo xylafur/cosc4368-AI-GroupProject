@@ -57,9 +57,12 @@ class World:
         self._reward = reward
 
         self._pick_up_locations = pick_up_locations
+        self._org_pick_up_locations = copy.deepcopy(pick_up_locations)
         self._pick_up_reward = pick_up_reward
+
         self._drop_off_locations = drop_off_locations
         self._drop_off_reward = drop_off_reward
+        self._org_drop_off_locations = copy.deepcopy(drop_off_locations)
 
         self._w = width
         self._h = height

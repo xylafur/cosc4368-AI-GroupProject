@@ -80,10 +80,16 @@ class QTable:
             else:
                 self._table[state]['type'] = 'normal'
 
+            self._table[state]['touched'] = False
+
+
     def __repr__(self):
         s = ''
         for state in itertools.product(*self.state_space):
-            s += "{} = {}\n".format(state, self._table[state])
+            if any([v != 0 for k, v in self._table[state].items()
+                    if k in ['north', 'south', 'east', 'west']]):
+                self._table[state]['touched'] = True
+            s += "{} = {}\r\n".format(state, self._table[state])
         return s
 
     def __getitem__(self, state):
