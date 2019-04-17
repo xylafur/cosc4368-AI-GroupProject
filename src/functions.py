@@ -27,11 +27,6 @@ def q_learning(world, agent, qtable, action, next_action, learning_rate, discoun
         dir = max(get_max_neighbors(neighbors, state, qtable))
         r = world.get_reward(*agent.get_position(), agent.is_holding_block())
         qtable[state][action] = (1 - learning_rate) * qtable[state][action] + (r + discount_rate * qtable[next_state][dir])
-       
-
-    # not correct, just for testing
-    qtable[get_current_state(world, agent)][action] = \
-            world.get_reward(*agent.get_position(), agent.is_holding_block())
 
 def SARSA(world, agent, qtable, action, next_action, learning_rate, discount_rate):
     # this is a pickup or dropoff.. just return because we don't update the q
@@ -46,12 +41,3 @@ def SARSA(world, agent, qtable, action, next_action, learning_rate, discount_rat
         next_state = get_current_state(world, agent.pretend_move(action))
         r = world.get_reward(*agent.get_position(), agent.is_holding_block())
         qtable[state][action] = qtable[state][action] + learning_rate * ( r + qtable[next_state][next_action] - qtable[state][action])
-    
-
-
-
-    # not correct, just for testing
-    qtable[get_current_state(world, agent)][action] = \
-            world.get_reward(*agent.get_position(), agent.is_holding_block())
-
-
