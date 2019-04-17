@@ -10,7 +10,7 @@ import os
 OUT_DIR="ExperimentOutput"
 
 def write_experiment_output(directory, filename, world, agent, qtable, policy,
-                            iteration):
+                            iteration, movements):
     if not os.path.isdir(directory):
         os.mkdir(directory)
     # only doing this because I know it will work on any platform.. the whole
@@ -32,6 +32,11 @@ def write_experiment_output(directory, filename, world, agent, qtable, policy,
         f.write("Starting Drop Off Locations: {}\r\n".format(world._org_drop_off_locations))
         f.write("Ending Pick Up Locations: {}\r\n".format(world._pick_up_locations))
         f.write("Ending Drop OffLocations: {}\r\n\r\n".format(world._drop_off_locations))
+
+        f.write("Movements over time for the agent: \r\n")
+        for ii, each in enumerate(movements):
+            f.write("    Movement # {} - Position/Is Carrying Block {}\r\n".format(ii, each))
+        f.write("\r\n")
 
         f.write("Resulting Q Table\r\n")
         f.write(qtable.__repr__())
@@ -93,7 +98,11 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
     next_action = None
     iteration = 1
 
+    movements = []
+
     while current_step < num_steps:
+        movements.append((agent.get_position(), agent.is_holding_block()))
+
         if is_world_solved(world, agent):
             world.reset_world()
             agent.reset_to_start()
@@ -134,7 +143,7 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
         policy = get_new_policy(setup, current_step, policy)
 
     write_experiment_output(OUT_DIR, filename, world, agent, q, policy,
-                            iteration)
+                            iteration, movements)
 
 is_world_solved = lambda world, agent:                                      \
     all([not each for each in get_current_state(world, agent)[3:]])
