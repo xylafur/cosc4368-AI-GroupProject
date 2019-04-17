@@ -45,7 +45,7 @@ def SARSA(world, agent, qtable, action, next_action, learning_rate, discount_rat
         state = get_current_state(world, agent)        
         next_state = get_current_state(world, agent.pretend_move(action))
         r = world.get_reward(*agent.get_position(), agent.is_holding_block())
-        qtable[state][action] = qtable[state][action] + learning_rate * ( r + qtable[next_state][dir] - qtable[state][action])
+        qtable[state][action] = qtable[state][action] + learning_rate * ( r + qtable[next_state][next_action] - qtable[state][action])
     
 
 
