@@ -4,6 +4,10 @@
 
 """
 from manager import get_current_state
+from world import *
+from agent import *
+from location import *
+from qtable import *
 
 ##################
 #   Right now these are just filled with placeholders
