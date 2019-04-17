@@ -109,3 +109,11 @@ class Colors():
     blue = (0,0,255)
     yellow = (255,255,0)
     grey = (128,128,128)
+
+# Use matplotlib to output q table to graph? ( 25 states)
+
+def main():
+    d = Display()
+    d.Create_World('Greedy Policy', 5, 5)
+
+main()
