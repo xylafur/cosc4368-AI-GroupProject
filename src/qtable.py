@@ -49,22 +49,32 @@ def get_max_neighbors(neighbors, current_state, qtable):
     return max_neighbors
 
 class QTable:
-    def __init__(self, world):
+    def __init__(self, world, state_space='big'):
         self._w = world.get_width()
         self._h = world.get_height()
 
         self._table = {}
+
+        self._state_space = state_space
 
         self.state_space = [
             [w for w in range(self._w)],
             [h for h in range(self._h)],
             [True, False],
         ]
-        #idk how to do this with list comprehension
-        for ii in range(world.num_pickup_locations() + world.num_dropoff_locations()):
-            self.state_space.append([True, False])
 
-        #initialize all values in the table to 0
+        if state_space == 'big':
+            #idk how to do this with list comprehension
+            for ii in range(world.num_pickup_locations() + world.num_dropoff_locations()):
+                self.state_space.append([True, False])
+
+        self._num_pickup = world.num_pickup_locations()
+
+        self._num_dropoff = world.num_dropoff_locations()
+
+
+
+       #initialize all values in the table to 0
         for state in itertools.product(*self.state_space):
             self._table[state] = {
                 'north': 0,
@@ -85,11 +95,30 @@ class QTable:
 
     def __repr__(self):
         s = ''
-        for state in itertools.product(*self.state_space):
-            if any([v != 0 for k, v in self._table[state].items()
-                    if k in ['north', 'south', 'east', 'west']]):
-                self._table[state]['touched'] = True
-            s += "{} = {}\r\n".format(state, self._table[state])
+
+        #print it out in a better order
+        if self._state_space == 'big':
+            pickup_dropoff = [[True, False] for _ in range(self._num_pickup +
+                                                           self._num_dropoff)]
+
+            for pd_s in itertools.product(*pickup_dropoff):
+                for holding_block in [True, False]:
+                    for x in range(self._w):
+                        for y in range(self._h):
+                            state = (x, y, holding_block) + tuple(pd_s)
+
+                            if any([v != 0 for k, v in self._table[state].items()
+                                    if k in ['north', 'south', 'east', 'west']]):
+                                self._table[state]['touched'] = True
+
+                            s += "{} = {}\r\n".format(state, self[state])
+
+                s += "\r\n"
+        else:
+            s = 'Sorry this is not implemented yet'
+
+
+
         return s
 
     def __getitem__(self, state):
