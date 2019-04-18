@@ -15,22 +15,32 @@ def main():
     # This should run experiment number 1.  8000 steps total, the first 4000
     # steps we use PRANDOM policy, then we use PGREEDY for the next 4000 steps
     manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-            [(4000, p_greedy)], filename="Experiment1")
+            [(4000, p_greedy)], filename="Experiment1_1")
+    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
+            [(4000, p_greedy)], filename="Experiment1_2")
+
 
     manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-            [(200, p_exploit)], filename="Experiment2")
+            [(200, p_exploit)], filename="Experiment2_1")
+    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
+            [(200, p_exploit)], filename="Experiment2_2")
+
 
     manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 0.5, p_random, 8000,
-            [(200, p_exploit)], filename="Experiment3")
+            [(200, p_exploit)], filename="Experiment3_1")
+    manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 0.5, p_random, 8000,
+            [(200, p_exploit)], filename="Experiment3_2")
+
 
     manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 1.0, p_random, 8000,
-            [(200, p_exploit)], filename="Experiment4")
-
+            [(200, p_exploit)], filename="Experiment4_1")
+    manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 1.0, p_random, 8000,
+            [(200, p_exploit)], filename="Experiment4_2")
     #TODO: Add support for manager to swap after 2 iterations of terminal
     manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-            [(200, p_exploit)], swap_after_iter=2, filename="Experiment5")
-
-
+            [(200, p_exploit)], swap_after_iter=2, filename="Experiment5_1")
+    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
+            [(200, p_exploit)], swap_after_iter=2, filename="Experiment5_2")
 
     #manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000)
     #manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_greedy, 8000)
