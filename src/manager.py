@@ -10,7 +10,7 @@ import os
 OUT_DIR="ExperimentOutput"
 
 def write_experiment_output(directory, filename, world, agent, qtable, policy,
-                            iteration, movements, heatmap):
+                            iteration, movements, heatmap, state_space):
     if not os.path.isdir(directory):
         os.mkdir(directory)
     # only doing this because I know it will work on any platform.. the whole
@@ -20,7 +20,8 @@ def write_experiment_output(directory, filename, world, agent, qtable, policy,
 
     with open(filename, 'w') as f:
         f.write(filename + '\r\n')
-        f.write("Current State: {}\r\n".format(get_current_state(world, agent)))
+        f.write("Current State: {}\r\n".format(get_current_state(
+            world, agent, state_space=state_space)))
         f.write("Ending Policy: {}\r\n\r\n".format(policy.__name__))
 
         f.write("Total Moves: {}\r\n".format(agent._total_moves))
@@ -35,9 +36,14 @@ def write_experiment_output(directory, filename, world, agent, qtable, policy,
 
         f.write("Heatmap of visited locations:\r\n")
 
+        tot_sum = 0
         for col in heatmap:
             f.write("    " + " ".join([str(row) for row in col]))
             f.write("\r\n")
+            tot_sum += sum(col)
+
+        #just sanity checking because the numbers seem weird...
+        assert(tot_sum == 8000)
 
 
         f.write("\r\nMovements over time for the agent: \r\n")
@@ -52,7 +58,7 @@ def write_experiment_output(directory, filename, world, agent, qtable, policy,
 
 def manager(world, agent, learning_function, learning_rate, discount_rate,
             policy, num_steps, setup=None, swap_after_iter=None,
-            filename="give_me_a_name.txt"):
+            filename="give_me_a_name.txt", state_space='big'):
     """
         This function is kinda like the main, it will run the given
         learning_function on the given world with the given learning rate,
@@ -97,7 +103,7 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
     if not setup:
         setup = []
 
-    q = QTable(world)
+    q = QTable(world, state_space=state_space)
     current_step = 0
 
     # Set this to None here for the SARSA algorithm.  We won't be 
@@ -129,17 +135,19 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
         #
         #   There is probably better way of doing this
         if not action:
-            action = policy(agent, world, q)
-            next_action = policy(agent.pretend_move(action), world, q)
+            action = policy(agent, world, q, state_space=state_space)
+            next_action = policy(agent.pretend_move(action), world, q,
+                                 state_space=state_space)
         else:
             action = next_action
-            next_action = policy(agent.pretend_move(action), world, q)
+            next_action = policy(agent.pretend_move(action), world, q,
+                                 state_space=state_space)
 
 
         #   Update the q table based on the state we are in and the action we
         #   have chosen
         learning_function(world, agent, q, action, next_action, learning_rate,
-                          discount_rate)
+                          discount_rate, state_space=state_space)
 
         # If we are on a pick up and don't have a block, pick it up.  If we are
         # on a drop off and have a block, drop it off
@@ -153,10 +161,9 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
         policy = get_new_policy(setup, current_step, policy)
 
     write_experiment_output(OUT_DIR, filename, world, agent, q, policy,
-                            iteration, movements, heatmap)
+                            iteration, movements, heatmap, state_space)
 
-is_world_solved = lambda world, agent:                                      \
-    all([not each for each in get_current_state(world, agent)[3:]])
+is_world_solved = lambda world, agent: world.is_world_solved()
 
 def pickup_dropoff(world, agent):
     # If the agent is on a pick up square that has blocks that can be picked up
@@ -202,7 +209,7 @@ def get_new_policy(setup, steps, current):
 
     return new_policy
 
-def get_current_state(world, agent):
+def get_current_state(world, agent, state_space='big'):
     """
         Returns the state of the universe (as a tuple) based on the agent and
         world states
@@ -219,6 +226,10 @@ def get_current_state(world, agent):
     """
     x, y = agent.get_position()
     block = agent.is_holding_block()
+
+    if state_space != 'big':
+        return (x, y, block)
+
     pickup_status = world.locations_status(PICKUP)
     dropoff_status = world.locations_status(DROPOFF)
 

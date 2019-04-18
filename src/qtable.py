@@ -115,9 +115,15 @@ class QTable:
 
                 s += "\r\n"
         else:
-            s = 'Sorry this is not implemented yet'
+            for holding_block in [True, False]:
+                for x in range(self._w):
+                    for y in range(self._h):
+                        state = (x, y, holding_block)
+                        if any([v != 0 for k, v in self._table[state].items()
+                                if k in ['north', 'south', 'east', 'west']]):
+                            self._table[state]['touched'] = True
 
-
+                        s += "{} = {}\r\n".format(state, self[state])
 
         return s
 

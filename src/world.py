@@ -92,6 +92,19 @@ class World:
 #   Public Functions
 ###############################################################################
 
+    def is_world_solved(self):
+        r = []
+        # See if this is a valid drop off location for each location, we store
+        # the inverse though because it makes what we do at the end easier
+        for x, y, _ in self._drop_off_locations:
+            r.append(not self.is_dropoff(x, y))
+        for x, y, _ in self._pick_up_locations:
+            r.append(not self.is_pickup(x, y))
+
+        # if nont of the pick up or drop off locations were valid, since we took
+        # their inverse, they will all be true if we are done
+        return all(r)
+
     num_pickup_locations = lambda self: len(self._pick_up_locations)
     num_dropoff_locations = lambda self: len(self._drop_off_locations)
 
