@@ -10,7 +10,7 @@ import os
 OUT_DIR="ExperimentOutput"
 
 def write_experiment_output(directory, filename, world, agent, qtable, policy,
-                            iteration, movements):
+                            iteration, movements, heatmap):
     if not os.path.isdir(directory):
         os.mkdir(directory)
     # only doing this because I know it will work on any platform.. the whole
@@ -33,7 +33,14 @@ def write_experiment_output(directory, filename, world, agent, qtable, policy,
         f.write("Ending Pick Up Locations: {}\r\n".format(world._pick_up_locations))
         f.write("Ending Drop OffLocations: {}\r\n\r\n".format(world._drop_off_locations))
 
-        f.write("Movements over time for the agent: \r\n")
+        f.write("Heatmap of visited locations:\r\n")
+
+        for col in heatmap:
+            f.write("    " + " ".join([str(row) for row in col]))
+            f.write("\r\n")
+
+
+        f.write("\r\nMovements over time for the agent: \r\n")
         for ii, each in enumerate(movements):
             f.write("    Movement # {} - Position/Is Carrying Block {}\r\n".format(ii, each))
         f.write("\r\n")
@@ -100,8 +107,11 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
 
     movements = []
 
+    heatmap = [[0 for _ in range(world._w)] for __ in range(world._h)]
+
     while current_step < num_steps:
         movements.append((agent.get_position(), agent.is_holding_block()))
+        heatmap[agent.get_position()[1]][agent.get_position()[0]] += 1
 
         if is_world_solved(world, agent):
             world.reset_world()
@@ -143,7 +153,7 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
         policy = get_new_policy(setup, current_step, policy)
 
     write_experiment_output(OUT_DIR, filename, world, agent, q, policy,
-                            iteration, movements)
+                            iteration, movements, heatmap)
 
 is_world_solved = lambda world, agent:                                      \
     all([not each for each in get_current_state(world, agent)[3:]])
