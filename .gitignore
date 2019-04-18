@@ -2,3 +2,5 @@
 .*.un*
 *.pyc
 *__pycache__/*
+/.vs/slnx.sqlite
+/.vs/GroupProject/v15/.suo
