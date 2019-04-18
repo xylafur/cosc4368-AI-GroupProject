@@ -34,6 +34,9 @@ def write_experiment_output(directory, filename, world, agent, qtable, policy,
         f.write("Ending Pick Up Locations: {}\r\n".format(world._pick_up_locations))
         f.write("Ending Drop OffLocations: {}\r\n\r\n".format(world._drop_off_locations))
 
+        f.write("Percent of states visited: {}\r\n\r\n".format(
+            qtable.percent_visited()))
+
         f.write("Heatmap of visited locations:\r\n")
 
         tot_sum = 0
