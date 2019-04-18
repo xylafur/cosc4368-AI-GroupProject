@@ -1,12 +1,17 @@
 import csv
 import os
+import matplotlib.pyplot as plt
+import numpy as np
 
 VISUALS_DIRECTORY = "Visuals"
 EXPERIMENT_DIRECTORY = "ExperimentOutput"
+HEATMAP_DIRECTORY = "HeatMaps"
 ACTIONS = ['Position', 'N', 'S', 'E', 'W']
 
 def get_QTables(file, outputFileName):
     lines = file.read().splitlines()
+
+    create_heatMap(lines, file)
 
     index = lines.index("Resulting Q Table") + 1
     lines = lines[index : ]
@@ -16,6 +21,8 @@ def get_QTables(file, outputFileName):
     tables = {}  
     tableEntries = []
     
+    
+
     if "SmallStatespace" not in file.name:
         for line in lines:
             if line.strip():
@@ -108,9 +115,54 @@ def get_QTable(line):
 
     return table
 
+def create_heatMap(lines, file):
+    index = lines.index("Heatmap of visited locations:") + 1
+    index2 = lines.index("Movements over time for the agent: ")
+    newLines = lines[index : index2 ]
+    data = []
+    validData = []
+    temp = []
+    baseFileName = newFileName = file.name[ : file.name.index('.')]
 
+    rows = ['0','1','2','3','4']
+    cols = rows
 
-def main():
+    for line in newLines:
+        if line:
+            data.append(line.strip().split(' '))
+    for row in data:
+        temp = [int(i) for i in row] 
+        validData.append(temp)
+
+    visited = np.array(validData)
+
+    fig, ax = plt.subplots()
+
+    ax.set_xticks(np.arange(len(rows)))
+    ax.set_yticks(np.arange(len(cols)))
+
+    ax.set_xticklabels(rows)
+    ax.set_yticklabels(cols)
+
+    for i in range(len(rows)):
+        for j in range(len(cols)):
+            text = ax.text(j, i, visited[i,j], ha="center", va="center")
+    
+    ax.set_title(baseFileName + ": Number of Visits per Cell")
+    im = ax.imshow(visited)
+    if not os.path.isdir(HEATMAP_DIRECTORY):
+        os.mkdir(HEATMAP_DIRECTORY)
+
+    orgdir = os.getcwd()
+    os.chdir(HEATMAP_DIRECTORY)
+
+    newFileName = baseFileName + '_HeatMap.png'
+    plt.savefig(newFileName)
+
+    os.chdir(orgdir)
+    plt.show()
+
+def generate_csv():
     if not os.path.isdir(EXPERIMENT_DIRECTORY):
         os.mkdir(EXPERIMENT_DIRECTORY)
 
@@ -189,8 +241,9 @@ def main():
     ex_4_sss_2.close()
     ex_5_sss_2.close()
     
-
     os.chdir(orgdir)
 
+def main():
+    generate_csv()
 
 main()
