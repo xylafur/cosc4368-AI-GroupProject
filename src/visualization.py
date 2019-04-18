@@ -2,6 +2,7 @@ import csv
 import os
 
 VISUALS_DIRECTORY = "Visuals"
+EXPERIMENT_DIRECTORY = "ExperimentOutput"
 ACTIONS = ['Position', 'N', 'S', 'E', 'W']
 
 def get_QTables(file, outputFileName):
@@ -14,38 +15,77 @@ def get_QTables(file, outputFileName):
     stateSpace = ""
     tables = {}  
     tableEntries = []
+    
+    if "SmallStatespace" not in file.name:
+        for line in lines:
+            if line.strip():
+                if "(0, 0" in line:
+                    if lineCount > 0:
+                        tables[stateSpace] = tableEntries
+                        tableEntries = []
+                        stateSpace = ""
 
-    for line in lines:
-        if line.strip():
-            if "(0, 0" in line:
-                if lineCount > 0:
-                    tables[stateSpace] = tableEntries
-                    tableEntries = []
-                    stateSpace = ""
+                    lineCount = 0
+                    stateSpace = line[7: line.index(") =")]
 
-                lineCount = 0
-                stateSpace = line[7: line.index(") =")]
+                tableEntries.append(get_QTable(line))
+                lineCount +=1    
 
-            tableEntries.append(get_QTable(line))
-            lineCount +=1    
+        if not os.path.isdir(VISUALS_DIRECTORY):
+            os.mkdir(VISUALS_DIRECTORY)
 
-    if not os.path.isdir(VISUALS_DIRECTORY):
-        os.mkdir(VISUALS_DIRECTORY)
+        orgdir = os.getcwd()
+        os.chdir(VISUALS_DIRECTORY)
 
-    orgdir = os.getcwd()
-    os.chdir(VISUALS_DIRECTORY)
+        with open(outputFileName, "w", newline='') as file:
+            writer = csv.writer(file, delimiter=',')
 
-    with open(outputFileName, "w", newline='') as file:
-        writer = csv.writer(file, delimiter=',')
+            for key, value in tables.items():
+                writer.writerow([key])
+                writer.writerow([a for a in ACTIONS])
 
-        for key, value in tables.items():
-            writer.writerow([key])
-            writer.writerow([a for a in ACTIONS])
+                for values in value:
+                    for k, vals in values.items():                   
+                        [float(i) for i in vals]                    
+                        writer.writerow([k] + vals)
+        os.chdir(orgdir)
+    else:
+        tables = {}
+        state = "True"
+        positionValues = []
 
-            for values in value:
-                for k, vals in values.items():                   
-                    [float(i) for i in vals]                    
-                    writer.writerow([k] + vals)
+        for line in lines:
+            if line.strip():
+                newState = line[7 : line.index(") =")]
+                if newState != state: 
+                    tables[state] = positionValues
+                    state = newState
+                    positionValues = []
+                else:
+                    positionValues.append(get_QTable(line))
+        # Add any leftover data to table
+        if positionValues:
+            tables[state] = positionValues
+
+        if not os.path.isdir(VISUALS_DIRECTORY):
+            os.mkdir(VISUALS_DIRECTORY)
+
+        orgdir = os.getcwd()
+        os.chdir(VISUALS_DIRECTORY)
+
+        with open(outputFileName, "w", newline='') as file:
+            writer = csv.writer(file, delimiter=',')
+
+            for key, value in tables.items():
+                writer.writerow([key])
+                writer.writerow([a for a in ACTIONS])
+
+                for values in value:
+                    for k, vals in values.items():                   
+                        [float(i) for i in vals]                    
+                        writer.writerow([k] + vals)
+                
+        os.chdir(orgdir)
                 
 
 def get_QTable(line):
@@ -71,23 +111,86 @@ def get_QTable(line):
 
 
 def main():
-    ex_1 = open("C:\\Users\\Bobby\\source\\repos\\AI\\GroupProject\\src\\ExperimentOutput\\Experiment1", "r")
-    ex_2 = open("C:\\Users\\Bobby\\source\\repos\\AI\\GroupProject\\src\\ExperimentOutput\\Experiment2", "r")
-    ex_3 = open("C:\\Users\\Bobby\\source\\repos\\AI\\GroupProject\\src\\ExperimentOutput\\Experiment3", "r")
-    ex_4 = open("C:\\Users\\Bobby\\source\\repos\\AI\\GroupProject\\src\\ExperimentOutput\\Experiment4", "r")
-    ex_5 = open("C:\\Users\\Bobby\\source\\repos\\AI\\GroupProject\\src\\ExperimentOutput\\Experiment5", "r")
+    if not os.path.isdir(EXPERIMENT_DIRECTORY):
+        os.mkdir(EXPERIMENT_DIRECTORY)
 
-    ex_1_tables = get_QTables(ex_1, "Experiment1.csv")
-    ex_2_tables = get_QTables(ex_2, "Experiment2.csv")
-    ex_3_tables = get_QTables(ex_3, "Experiment3.csv")
-    ex_4_tables = get_QTables(ex_4, "Experiment4.csv")
-    ex_5_tables = get_QTables(ex_5, "Experiment5.csv")
+    orgdir = os.getcwd()
+    os.chdir(EXPERIMENT_DIRECTORY)
 
-    ex_1.close()
-    ex_2.close()
-    ex_3.close()
-    ex_4.close()
-    ex_5.close()
+    ex_1_1 = open("Experiment1_1.txt", "r")
+    ex_2_1 = open("Experiment2_1.txt", "r")
+    ex_3_1 = open("Experiment3_1.txt", "r")
+    ex_4_1 = open("Experiment4_1.txt", "r")
+    ex_5_1 = open("Experiment5_1.txt", "r")
+
+    ex_1_1_tables = get_QTables(ex_1_1, "Experiment1_1.csv")
+    ex_2_1_tables = get_QTables(ex_2_1, "Experiment2_1.csv")
+    ex_3_1_tables = get_QTables(ex_3_1, "Experiment3_1.csv")
+    ex_4_1_tables = get_QTables(ex_4_1, "Experiment4_1.csv")
+    ex_5_1_tables = get_QTables(ex_5_1, "Experiment5_1.csv")
+
+    ex_1_1.close()
+    ex_2_1.close()
+    ex_3_1.close()
+    ex_4_1.close()
+    ex_5_1.close()
+
+    ex_1_2 = open("Experiment1_2.txt", "r")
+    ex_2_2 = open("Experiment2_2.txt", "r")
+    ex_3_2 = open("Experiment3_2.txt", "r")
+    ex_4_2 = open("Experiment4_2.txt", "r")
+    ex_5_2 = open("Experiment5_2.txt", "r")
+
+    ex_1_2_tables = get_QTables(ex_1_2, "Experiment1_2.csv")
+    ex_2_2_tables = get_QTables(ex_2_2, "Experiment2_2.csv")
+    ex_3_2_tables = get_QTables(ex_3_2, "Experiment3_2.csv")
+    ex_4_2_tables = get_QTables(ex_4_2, "Experiment4_2.csv")
+    ex_5_2_tables = get_QTables(ex_5_2, "Experiment5_2.csv")
+
+    ex_1_2.close()
+    ex_2_2.close()
+    ex_3_2.close()
+    ex_4_2.close()
+    ex_5_2.close()
+
+    ex_1_sss_1 = open("Experiment1_SmallStatespace_1.txt", "r")
+    ex_2_sss_1 = open("Experiment2_SmallStatespace_1.txt", "r")
+    ex_3_sss_1 = open("Experiment3_SmallStatespace_1.txt", "r")
+    ex_4_sss_1 = open("Experiment4_SmallStatespace_1.txt", "r")
+    ex_5_sss_1 = open("Experiment5_SmallStatespace_1.txt", "r")
+
+    ex_1_sss_1_tables = get_QTables(ex_1_sss_1, "Experiment1_SSS_1.csv")
+    ex_2_sss_1_tables = get_QTables(ex_2_sss_1, "Experiment2_SSS_1.csv")
+    ex_3_sss_1_tables = get_QTables(ex_3_sss_1, "Experiment3_SSS_1.csv")
+    ex_4_sss_1_tables = get_QTables(ex_4_sss_1, "Experiment4_SSS_1.csv")
+    ex_5_sss_1_tables = get_QTables(ex_5_sss_1, "Experiment5_SSS_1.csv")
+
+    ex_1_sss_1.close()
+    ex_2_sss_1.close()
+    ex_3_sss_1.close()
+    ex_4_sss_1.close()
+    ex_5_sss_1.close()
+
+    ex_1_sss_2 = open("Experiment1_SmallStatespace_2.txt", "r")
+    ex_2_sss_2 = open("Experiment2_SmallStatespace_2.txt", "r")
+    ex_3_sss_2 = open("Experiment3_SmallStatespace_2.txt", "r")
+    ex_4_sss_2 = open("Experiment4_SmallStatespace_2.txt", "r")
+    ex_5_sss_2 = open("Experiment5_SmallStatespace_2.txt", "r")
+
+    ex_1_sss_2_tables = get_QTables(ex_1_sss_2, "Experiment1_SSS_2.csv")
+    ex_2_sss_2_tables = get_QTables(ex_2_sss_2, "Experiment2_SSS_2.csv")
+    ex_3_sss_2_tables = get_QTables(ex_3_sss_2, "Experiment3_SSS_2.csv")
+    ex_4_sss_2_tables = get_QTables(ex_4_sss_2, "Experiment4_SSS_2.csv")
+    ex_5_sss_2_tables = get_QTables(ex_5_sss_2, "Experiment5_SSS_2.csv")
+
+    ex_1_sss_2.close()
+    ex_2_sss_2.close()
+    ex_3_sss_2.close()
+    ex_4_sss_2.close()
+    ex_5_sss_2.close()
+    
+
+    os.chdir(orgdir)
 
 
 main()
