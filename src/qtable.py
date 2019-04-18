@@ -115,11 +115,57 @@ class QTable:
 
                 s += "\r\n"
         else:
-            s = 'Sorry this is not implemented yet'
+            for holding_block in [True, False]:
+                for x in range(self._w):
+                    for y in range(self._h):
+                        state = (x, y, holding_block)
+                        if any([v != 0 for k, v in self._table[state].items()
+                                if k in ['north', 'south', 'east', 'west']]):
+                            self._table[state]['touched'] = True
 
-
+                        s += "{} = {}\r\n".format(state, self[state])
 
         return s
+
+    def percent_visited(self):
+        cnt, tot = 0, 0
+        if self._state_space == 'big':
+            pickup_dropoff = [[True, False] for _ in range(self._num_pickup +
+                                                           self._num_dropoff)]
+            for pd_s in itertools.product(*pickup_dropoff):
+                for holding_block in [True, False]:
+                    for x in range(self._w):
+                        for y in range(self._h):
+                            state = (x, y, holding_block) + tuple(pd_s)
+
+                            if any([v != 0 for k, v in self._table[state].items()
+                                    if k in ['north', 'south', 'east', 'west']]):
+                                self._table[state]['touched'] = True
+
+                            tot+= 1
+                            if self._table[state]['touched']:
+                                cnt += 1
+
+            return float(cnt) / tot
+
+        else:
+            for holding_block in [True, False]:
+                for x in range(self._w):
+                    for y in range(self._h):
+                        state = (x, y, holding_block)
+
+                        if any([v != 0 for k, v in self._table[state].items()
+                                if k in ['north', 'south', 'east', 'west']]):
+                            self._table[state]['touched'] = True
+
+
+
+                        tot+= 1
+                        if self._table[state]['touched']:
+                            cnt += 1
+
+            return float(cnt) / tot
+
 
     def __getitem__(self, state):
         return self._table[state]

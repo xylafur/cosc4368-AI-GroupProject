@@ -11,41 +11,44 @@ def main():
               [(0, 4, 5), (2, 4, 5), (0, 2, 5)], -1, 15, 15)
     a = Agent(1, 1)
 
-
-    # This should run experiment number 1.  8000 steps total, the first 4000
-    # steps we use PRANDOM policy, then we use PGREEDY for the next 4000 steps
     manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-            [(4000, p_greedy)], filename="Experiment1_1")
-    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-            [(4000, p_greedy)], filename="Experiment1_2")
-
+            [(4000, p_greedy)], filename="Experiment1.txt")
 
     manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-            [(200, p_exploit)], filename="Experiment2_1")
-    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-            [(200, p_exploit)], filename="Experiment2_2")
-
+            [(200, p_exploit)], filename="Experiment2.txt")
 
     manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 0.5, p_random, 8000,
-            [(200, p_exploit)], filename="Experiment3_1")
+            [(200, p_exploit)], filename="Experiment3.txt")
+
+    manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 1.0, p_random, 8000,
+            [(200, p_exploit)], filename="Experiment4.txt")
+
+    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
+            [(200, p_exploit)], swap_after_iter=2, filename="Experiment5.txt")
+
+
+
+    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
+            [(4000, p_greedy)], filename="Experiment1_SmallStatespace.txt",
+            state_space='small')
+
+    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
+            [(200, p_exploit)], filename="Experiment2_SmallStatespace.txt",
+            state_space='small')
+
     manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 0.5, p_random, 8000,
-            [(200, p_exploit)], filename="Experiment3_2")
-
+            [(200, p_exploit)], filename="Experiment3_SmallStatespace.txt",
+            state_space='small')
 
     manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 1.0, p_random, 8000,
-            [(200, p_exploit)], filename="Experiment4_1")
-    manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 1.0, p_random, 8000,
-            [(200, p_exploit)], filename="Experiment4_2")
-    #TODO: Add support for manager to swap after 2 iterations of terminal
-    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-            [(200, p_exploit)], swap_after_iter=2, filename="Experiment5_1")
-    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
-            [(200, p_exploit)], swap_after_iter=2, filename="Experiment5_2")
+            [(200, p_exploit)], filename="Experiment4_SmallStatespace.txt",
+            state_space='small')
 
-    #manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000)
-    #manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_greedy, 8000)
-    #manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_exploit, 8000)
-    #manager(w, a, q_learning, 1.3, 0.5, PRANDOM, 8000, [(4000, PGREEDY)])
+    manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
+            [(200, p_exploit)], swap_after_iter=2,
+            filename="Experiment5_SmallStatespace.txt",
+            state_space='small')
+
 
 if __name__ == '__main__':
     #TODO: Add argument parsing to pass into the main function
