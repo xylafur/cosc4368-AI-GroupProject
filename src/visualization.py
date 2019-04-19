@@ -9,6 +9,13 @@ HEATMAP_DIRECTORY = "HeatMaps"
 ACTIONS = ['Position', 'N', 'S', 'E', 'W']
 
 def get_QTables(file, outputFileName):
+
+    if not os.path.isdir(VISUALS_DIRECTORY):
+            os.mkdir(VISUALS_DIRECTORY)
+
+    orgdir = os.getcwd()
+    os.chdir(VISUALS_DIRECTORY)
+
     lines = file.read().splitlines()
 
     create_heatMap(lines, file)
@@ -38,14 +45,11 @@ def get_QTables(file, outputFileName):
                 tableEntries.append(get_QTable(line))
                 lineCount +=1    
 
-        if not os.path.isdir(VISUALS_DIRECTORY):
-            os.mkdir(VISUALS_DIRECTORY)
-
-        orgdir = os.getcwd()
-        os.chdir(VISUALS_DIRECTORY)
+        
 
         with open(outputFileName, "w", newline='') as file:
             writer = csv.writer(file, delimiter=',')
+            writer.writerow([file.name[ : file.name.index('.')]])
 
             for key, value in tables.items():
                 writer.writerow([key])
@@ -55,7 +59,6 @@ def get_QTables(file, outputFileName):
                     for k, vals in values.items():                   
                         [float(i) for i in vals]                    
                         writer.writerow([k] + vals)
-        os.chdir(orgdir)
     else:
         tables = {}
         state = "True"
@@ -74,14 +77,9 @@ def get_QTables(file, outputFileName):
         if positionValues:
             tables[state] = positionValues
 
-        if not os.path.isdir(VISUALS_DIRECTORY):
-            os.mkdir(VISUALS_DIRECTORY)
-
-        orgdir = os.getcwd()
-        os.chdir(VISUALS_DIRECTORY)
-
         with open(outputFileName, "w", newline='') as file:
             writer = csv.writer(file, delimiter=',')
+            writer.writerow([file.name[ : file.name.index('.')]])
 
             for key, value in tables.items():
                 writer.writerow([key])
@@ -92,7 +90,7 @@ def get_QTables(file, outputFileName):
                         [float(i) for i in vals]                    
                         writer.writerow([k] + vals)
                 
-        os.chdir(orgdir)
+    os.chdir(orgdir)
                 
 
 def get_QTable(line):
@@ -150,6 +148,7 @@ def create_heatMap(lines, file):
     
     ax.set_title(baseFileName + ": Number of Visits per Cell")
     im = ax.imshow(visited)
+
     if not os.path.isdir(HEATMAP_DIRECTORY):
         os.mkdir(HEATMAP_DIRECTORY)
 
@@ -160,7 +159,6 @@ def create_heatMap(lines, file):
     plt.savefig(newFileName)
 
     os.chdir(orgdir)
-    plt.show()
 
 def generate_csv():
     if not os.path.isdir(EXPERIMENT_DIRECTORY):
