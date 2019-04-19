@@ -1,8 +1,8 @@
-from test import test, TESTS
-from world import World
 from agent import Agent
+from manager import *
+from test import test
+from world import World
 
-from manager import manager, get_current_state
 
 @test
 def get_current_state_test():
