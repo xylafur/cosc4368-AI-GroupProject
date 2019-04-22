@@ -1,0 +1,158 @@
+import re
+from itertools import product
+from pathlib import Path
+
+import svgwrite
+
+BOARD_SIZE = ("200", "200")
+CSS_STYLES = """
+    .background { fill: white; }
+    .line { stroke: firebrick; stroke-width: .1mm; }
+    .start { fill: green; }
+    .dropoff { fill: red; }
+    .pickup { fill: blue; }
+    .normal {fill: white; }
+    rect {
+       stroke: black;
+       stroke-width: 1;
+    }
+
+    .agent {
+      r: 10%;
+      fill: black;
+      stroke-width: 2;
+      stroke: grey;
+      animation: blinker 4s linear infinite;
+      animation: move 5s ease forwards;
+    }
+    @keyframes blinker {
+       50% {
+         opacity: 0.5;
+       }
+
+    }
+"""
+
+
+def get_movement_data(x_list, y_list):
+    # path_ = path
+    x_list_ = x_list
+    y_list_ = y_list
+    txt = Path(
+        '/Users/henryrodriguez/PycharmProjects/cosc4368-AI-GroupProject/src/ExperimentOutput/Experiment1_1.txt').read_text()
+
+    regex_x = r"\t+\((\d)"
+    regex_y = r"\t+\(\d\S\s(\d)"
+    matches_x = re.finditer(regex_x, txt, re.MULTILINE)
+    move_x = []
+    for matchNum, match in enumerate(matches_x, start=1):
+        # print("{match}".format(match=match.group()))
+        for groupNum in range(0, len(match.groups())):
+            groupNum = groupNum + 1
+            move_x.append(int(match.group(groupNum)))
+    # print(move_x)
+
+    matches_y = re.finditer(regex_y, txt, re.MULTILINE)
+    move_y = []
+    for matchNum, match in enumerate(matches_y, start=1):
+        # print("{match}".format(match=match.group()))
+        for groupNum in range(0, len(match.groups())):
+            groupNum = groupNum + 1
+            move_y.append(int(match.group(groupNum)))
+    # print(move_y)
+    x_list = move_x
+    y_list = move_y
+
+    return x_list, y_list
+
+
+def draw_board(n=3, tile2classes=None):
+    dwg = svgwrite.Drawing(size=(f"{n + 0.05}cm", f"{n + 0.05}cm"))
+
+    dwg.add(dwg.rect(size=('100%', '100%'), class_='background'))
+
+    def group(classname):
+        return dwg.add(dwg.g(class_=classname))
+
+    # draw squares
+    for x, y in product(range(n), range(n)):
+        kwargs = {
+            'insert': (f"{x + 0.1}cm", f"{y + 0.1}cm"),
+            'size': (f"0.9cm", f"0.9cm"),
+        }
+        if tile2classes is not None and tile2classes(x, y):
+            kwargs["class_"] = tile2classes(x, n - y - 1)
+
+        dwg.add(dwg.rect(**kwargs))
+
+    return dwg
+
+
+def gen_offsets(actions):
+    dx, dy = 0, 0
+    for ax, ay in actions:
+        dx = ax
+        dy = ay
+        yield dx, dy
+
+
+def move_keyframe(dx, dy, ratio):
+    return f"""{ratio * 100}% {{
+    transform: translate({dx}cm, {dy}cm);
+}}"""
+
+
+def gridworld(n=5, actions=None, tile2classes=None, extra_css=""):
+    dwg = draw_board(n=n, tile2classes=tile2classes)
+
+    css_styles = CSS_STYLES
+    if actions is not None:
+        # Add agent.
+        x, y = 0, 4  # start position.
+        cx, cy = x + 0.55, (n - y - 1) + 0.55
+        dwg.add(svgwrite.shapes.Circle(
+            r="0.1cm",
+            center=(f"{cx}cm", f"{cy}cm"),
+            class_="agent",
+        ))
+
+        offsets = gen_offsets(actions)
+        keyframes = [move_keyframe(x, y, (i + 1) / len(actions)) for i, (x, y)
+                     in enumerate(offsets)]
+        move_css = "\n@keyframes move {\n" + '\n'.join(keyframes) + "\n}"
+        css_styles += move_css
+
+    dwg.defs.add(dwg.style(css_styles + extra_css))
+    return dwg
+
+
+if __name__ == '__main__':
+    def tile2classes(x, y):
+        if (x == 0) and (y == 4):
+            return "start"
+        elif (x == 2) and (y == 4):
+            return "pickup"
+        elif (x == 2) and (y == 2):
+            return "pickup"
+        elif (x == 4) and (y == 0):
+            return "pickup"
+        elif (x == 0) and (y == 0):
+            return "dropoff"
+        elif (x == 2) and (y == 0):
+            return "dropoff"
+        elif (x == 4) and (y == 3):
+            return "dropoff"
+
+        return "normal"
+
+
+    x = []
+    y = []
+    x, y = get_movement_data(x, y)
+    actions = []
+    for x_, y_ in zip(x, y):
+        actions.append((x_, y_))
+    print(actions)
+    # actions = [E, N, N, N, N, W, W, W]
+    dwg = gridworld(n=5, tile2classes=tile2classes, actions=actions)
+    dwg.saveas("example.svg", pretty=True)
