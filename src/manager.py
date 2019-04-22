@@ -10,7 +10,8 @@ from qtable import QTable
 OUT_DIR="ExperimentOutput"
 
 def write_experiment_output(directory, filename, world, agent, qtable, policy,
-                            iteration, movements, heatmap, state_space):
+                            iteration, movements, heatmap, state_space,
+                            steps_per_iter):
     if not os.path.isdir(directory):
         os.mkdir(directory)
     # only doing this because I know it will work on any platform.. the whole
@@ -33,6 +34,11 @@ def write_experiment_output(directory, filename, world, agent, qtable, policy,
         f.write("Starting Drop Off Locations: {}\r\n".format(world._org_drop_off_locations))
         f.write("Ending Pick Up Locations: {}\r\n".format(world._pick_up_locations))
         f.write("Ending Drop OffLocations: {}\r\n\r\n".format(world._drop_off_locations))
+
+        f.write("Steps per each iteration\r\n")
+        for ii, steps in enumerate(steps_per_iter):
+            f.write("Iteration: {}, Steps: {}\r\n".format(ii + 1, steps))
+        f.write("\r\n")
 
         f.write("Percent of states visited: {}\r\n\r\n".format(
             qtable.percent_visited()))
@@ -116,6 +122,9 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
 
     movements = []
 
+    steps_this_iter = 0
+    steps_per_iter = []
+
     heatmap = [[0 for _ in range(world._w)] for __ in range(world._h)]
     swapped = False
 
@@ -127,6 +136,11 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
             world.reset_world()
             agent.reset_to_start()
             iteration += 1
+
+            steps_per_iter.append(steps_this_iter)
+            steps_this_iter = 0
+
+        steps_this_iter += 1
 
         if swap_after_iter and (swap_after_iter + 1) == iteration and not swapped:
             world.swap_pickup_dropoff()
@@ -167,7 +181,8 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
         policy = get_new_policy(setup, current_step, policy)
 
     write_experiment_output(OUT_DIR, filename, world, agent, q, policy,
-                            iteration, movements, heatmap, state_space)
+                            iteration, movements, heatmap, state_space,
+                            steps_per_iter)
 
 is_world_solved = lambda world, agent: world.is_world_solved()
 
