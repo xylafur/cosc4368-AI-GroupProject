@@ -163,17 +163,16 @@ class World:
         """
         self.reset_world()
 
-        if self._swapped:
-            self._swapped = False
-            return
-        else:
-            self._swapped = True
+        assert(not self._swapped)
+        self._swapped = True
 
         self._pick_up_locations, self._drop_off_locations = \
                 self._drop_off_locations, self._pick_up_locations
 
         self._set_locations(self._pick_up_locations, PICKUP)
         self._set_locations(self._drop_off_locations, DROPOFF)
+
+        self._original_grid = copy.deepcopy(self._grid)
 
     def get_square(self, x, y, grid=None):
         assert(x < self._w)
@@ -186,6 +185,7 @@ class World:
 
     def reset_world(self):
         self._grid = copy.deepcopy(self._original_grid)
+        assert(not self.is_world_solved())
 
 
     def get_neighbors(self, x, y):

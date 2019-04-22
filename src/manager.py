@@ -117,6 +117,7 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
     movements = []
 
     heatmap = [[0 for _ in range(world._w)] for __ in range(world._h)]
+    swapped = False
 
     while current_step < num_steps:
         movements.append((agent.get_position(), agent.is_holding_block()))
@@ -127,8 +128,10 @@ def manager(world, agent, learning_function, learning_rate, discount_rate,
             agent.reset_to_start()
             iteration += 1
 
-        if swap_after_iter and (swap_after_iter + 1) == iteration:
+        if swap_after_iter and (swap_after_iter + 1) == iteration and not swapped:
             world.swap_pickup_dropoff()
+            swapped = True
+
 
         # The policy will tell us what our next action will be
         #
