@@ -76,22 +76,27 @@ def draw_board(n=3, tile2classes=None):
 
     # draw squares
     for x, y in product(range(n), range(n)):
-        kwargs = {
+        cell = {
             'insert': (f"{x + 0.1}cm", f"{y + 0.1}cm"),
             'size': (f"0.9cm", f"0.9cm"),
         }
         if tile2classes is not None and tile2classes(x, y):
-            kwargs["class_"] = tile2classes(x, n - y - 1)
-        cz, cv = x + 0.50, (y - 1.35)
-        print(cv)
-        print(y)
+            cell["class_"] = tile2classes(x, n - y - 1)
+        cz = x + 0.50
+        cv = (y - 1.35)
+        print(x, y)
         if (x == 2) and (y == 4):
+            print(cz, cv)
             dwg.add(dwg.text('P', insert=(f"{cz}cm", f"{cv}cm"), fill='white'))
         if (x == 2) and (y == 2):
+            print(cz, cv)
             dwg.add(dwg.text('P', insert=(f"{cz}cm", f"{cv}cm"), fill='white'))
         if (x == 4) and (y == 0):
-            dwg.add(dwg.text('P', insert=(f"{cz}cm", f"{cv}cm"), fill='white'))
-        dwg.add(dwg.rect(**kwargs))
+            cz = 4.5
+            cv = 2.65
+            dwg.add(dwg.text('P', insert=(f"{cz}cm", f"{cv}cm"), fill='black'))
+            print(cz, cv)
+        dwg.add(dwg.rect(**cell))
 
     return dwg
 
@@ -154,7 +159,6 @@ if __name__ == '__main__':
             return "dropoff"
         elif (x == 4) and (y == 3):
             return "dropoff"
-
         return "normal"
 
 
@@ -164,7 +168,7 @@ if __name__ == '__main__':
     actions = []
     for x_, y_ in zip(x, y):
         actions.append((x_, y_))
-    print(actions)
+    # print(actions)
     # actions = [E, N, N, N, N, W, W, W]
     dwg = gridworld(n=5, tile2classes=tile2classes, actions=actions)
     dwg.saveas("example.svg", pretty=True)
