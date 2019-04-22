@@ -2,10 +2,10 @@
     There is still alot that needs to be done for this module!
 """
 
-from qtable import QTable
-from location import PICKUP, DROPOFF
-
 import os
+
+from location import PICKUP, DROPOFF
+from qtable import QTable
 
 OUT_DIR="ExperimentOutput"
 
@@ -48,10 +48,10 @@ def write_experiment_output(directory, filename, world, agent, qtable, policy,
         #just sanity checking because the numbers seem weird...
         assert(tot_sum == 8000)
 
-
         f.write("\r\nMovements over time for the agent: \r\n")
+        f.write("\r\n\tMovement#\tPosition\tBlocks?\r\n")
         for ii, each in enumerate(movements):
-            f.write("    Movement # {} - Position/Is Carrying Block {}\r\n".format(ii, each))
+            f.write("\t{}\t\t\t{}\t\t\t{}\r\n".format(ii, each[0], each[1]))
         f.write("\r\n")
 
         f.write("Resulting Q Table\r\n")
