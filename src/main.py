@@ -30,12 +30,10 @@ def main():
             [(200, p_exploit)], filename="Experiment4_1.txt")
     manager(deepcopy(w), deepcopy(a), SARSA, 0.3, 1.0, p_random, 8000,
             [(200, p_exploit)], filename="Experiment4_2.txt")
-
     manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
             [(200, p_exploit)], swap_after_iter=2, filename="Experiment5_1.txt")
     manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
             [(200, p_exploit)], swap_after_iter=2, filename="Experiment5_2.txt")
-
 
 
     manager(deepcopy(w), deepcopy(a), q_learning, 0.3, 0.5, p_random, 8000,
