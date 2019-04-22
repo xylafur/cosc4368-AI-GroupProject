@@ -27,7 +27,7 @@ CSS_STYLES = """
     }
     @keyframes blinker {
        50% {
-         opacity: 0.5;
+         opacity: 1.0;
        }
 
     }
@@ -82,7 +82,15 @@ def draw_board(n=3, tile2classes=None):
         }
         if tile2classes is not None and tile2classes(x, y):
             kwargs["class_"] = tile2classes(x, n - y - 1)
-
+        cz, cv = x + 0.50, (y - 1.35)
+        print(cv)
+        print(y)
+        if (x == 2) and (y == 4):
+            dwg.add(dwg.text('P', insert=(f"{cz}cm", f"{cv}cm"), fill='white'))
+        if (x == 2) and (y == 2):
+            dwg.add(dwg.text('P', insert=(f"{cz}cm", f"{cv}cm"), fill='white'))
+        if (x == 4) and (y == 0):
+            dwg.add(dwg.text('P', insert=(f"{cz}cm", f"{cv}cm"), fill='white'))
         dwg.add(dwg.rect(**kwargs))
 
     return dwg
@@ -115,6 +123,10 @@ def gridworld(n=5, actions=None, tile2classes=None, extra_css=""):
             center=(f"{cx}cm", f"{cy}cm"),
             class_="agent",
         ))
+        # dwg.add(svgwrite.shapes.Line(
+        #     start=({cx},{cy}),
+        #     class_="path",
+        # ))
 
         offsets = gen_offsets(actions)
         keyframes = [move_keyframe(x, y, (i + 1) / len(actions)) for i, (x, y)
